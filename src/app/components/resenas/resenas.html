@@ -1,0 +1,32 @@
+<h3>Reseñas</h3>
+
+@if (error()) { <p class="error">{{ error() }}</p> }
+
+@if (auth.isLoggedIn()) {
+  <form class="formulario" (ngSubmit)="guardar()">
+    <select name="cal" [(ngModel)]="nueva.calificacion">
+      <option [ngValue]="5">5 - Excelente</option>
+      <option [ngValue]="4">4 - Muy bueno</option>
+      <option [ngValue]="3">3 - Bueno</option>
+      <option [ngValue]="2">2 - Regular</option>
+      <option [ngValue]="1">1 - Malo</option>
+    </select>
+    <input name="com" [(ngModel)]="nueva.comentario" placeholder="Tu comentario" />
+    <button type="submit">Publicar reseña</button>
+  </form>
+} @else {
+  <p>Inicia sesión para dejar una reseña.</p>
+}
+
+@for (r of resenas(); track r.id_resena) {
+  <article class="tarjeta">
+    <p><strong>{{ estrellas(r.calificacion) }}</strong> ({{ r.calificacion }}/5)</p>
+    @if (r.comentario) { <p>{{ r.comentario }}</p> }
+    @if (r.fecha_creacion) { <p>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</p> }
+    @if (r.id_usuario === miId()) {
+      <button class="borrar" (click)="eliminar(r.id_resena)">Eliminar mi reseña</button>
+    }
+  </article>
+} @empty {
+  <p>Esta veterinaria aún no tiene reseñas.</p>
+}

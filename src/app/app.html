@@ -1,0 +1,22 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">PeludOS</a>
+  <nav>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/veterinarias">Veterinarias</a>
+    <a routerLink="/productos">Productos</a>
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/mascotas">Mis mascotas</a>
+      <a routerLink="/salud">Salud</a>
+      <a routerLink="/carrito">Carrito</a>
+      <a routerLink="/mensajes">Mensajes</a>
+      <a href="#" (click)="$event.preventDefault(); cerrarSesion()">Cerrar sesión</a>
+    } @else {
+      <a routerLink="/login">Login</a>
+      <a routerLink="/registro">Registro</a>
+    }
+  </nav>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>

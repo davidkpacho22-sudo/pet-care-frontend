@@ -1,0 +1,15 @@
+<section class="home">
+  <h2>PeludOS</h2>
+  <p>Frontend en Angular conectado a tu API.</p>
+
+  @if (loggedIn) {
+    <p class="status ok">Sesión iniciada (token guardado en el navegador).</p>
+    <button type="button" (click)="logout()">Cerrar sesión</button>
+  } @else {
+    <p class="status">No has iniciado sesión.</p>
+    <div class="actions">
+      <a class="btn" routerLink="/login">Iniciar sesión</a>
+      <a class="btn secondary" routerLink="/registro">Registrarme</a>
+    </div>
+  }
+</section>

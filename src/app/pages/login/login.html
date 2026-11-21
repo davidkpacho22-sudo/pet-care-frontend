@@ -1,0 +1,43 @@
+<section class="auth-card">
+  <h2>Iniciar sesión</h2>
+  <p class="subtitle">Ingresa con tu correo y contraseña.</p>
+
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="auth-form">
+    <label>
+      Correo electrónico
+      <input
+        type="email"
+        name="correo"
+        [(ngModel)]="correo"
+        required
+        email
+        placeholder="tu@correo.com"
+      />
+    </label>
+
+    <label>
+      Contraseña
+      <input
+        type="password"
+        name="contrasena"
+        [(ngModel)]="contrasena"
+        required
+        minlength="4"
+        placeholder="••••••••"
+      />
+    </label>
+
+    @if (error) {
+      <p class="msg error">{{ error }}</p>
+    }
+    @if (exito) {
+      <p class="msg success">{{ exito }}</p>
+    }
+
+    <button type="submit" [disabled]="cargando || !loginForm.form.valid">
+      {{ cargando ? 'Ingresando…' : 'Entrar' }}
+    </button>
+  </form>
+
+  <p class="alt">¿No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>
+</section>

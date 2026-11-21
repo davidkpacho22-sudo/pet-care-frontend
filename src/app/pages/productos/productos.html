@@ -1,0 +1,49 @@
+<section class="contenedor">
+  <h2>Productos</h2>
+
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (mensaje()) { <p class="ok">{{ mensaje() }} - <a routerLink="/carrito">Ver carrito</a></p> }
+
+  @if (auth.isLoggedIn()) {
+    <form class="formulario" (ngSubmit)="guardar()">
+      <select name="vet" [(ngModel)]="nuevo.id_veterinaria" required>
+        <option [ngValue]="null">Veterinaria que lo vende</option>
+        @for (v of veterinarias(); track v.id_veterinaria) {
+          <option [ngValue]="v.id_veterinaria">{{ v.nombre }}</option>
+        }
+      </select>
+      <input name="nombre" [(ngModel)]="nuevo.nombre" placeholder="Nombre del producto" required />
+      <input name="desc" [(ngModel)]="nuevo.descripcion" placeholder="Descripción" />
+      <input name="stock" type="number" min="0" [(ngModel)]="nuevo.stock" placeholder="Stock" />
+      <input name="pcompra" type="number" min="0" [(ngModel)]="nuevo.precio_compra" placeholder="Precio de compra" />
+      <input name="pventa" type="number" min="0" [(ngModel)]="nuevo.precio_venta" placeholder="Precio de venta" required />
+      <button type="submit">Crear producto</button>
+    </form>
+  }
+
+  <div class="lista">
+    @for (p of productos(); track p.id_producto) {
+      <article class="tarjeta">
+        <h3>{{ p.nombre }}</h3>
+        @if (p.descripcion) { <p>{{ p.descripcion }}</p> }
+        <p>Vende: {{ nombreVeterinaria(p.id_veterinaria) }}</p>
+        <p><strong>$ {{ p.precio_venta | number:'1.0-0' }}</strong></p>
+        <p>Stock: {{ p.stock }}</p>
+        @if (auth.isLoggedIn()) {
+          @if (p.stock > 0) {
+            <input #cant type="number" min="1" [max]="p.stock" value="1" style="width: 70px" />
+            <button (click)="agregar(p.id_producto, +cant.value)">Agregar al carrito</button>
+          } @else {
+            <p class="error">Sin stock</p>
+          }
+        }
+      </article>
+    } @empty {
+      <p>No hay productos todavía.</p>
+    }
+  </div>
+
+  @if (!auth.isLoggedIn()) {
+    <p>Inicia sesión para comprar.</p>
+  }
+</section>

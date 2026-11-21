@@ -1,0 +1,32 @@
+<section class="contenedor">
+  <h2>Veterinarias</h2>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (auth.isLoggedIn()) {
+    <form class="formulario" (ngSubmit)="guardar()">
+      <input name="nombre" [(ngModel)]="nueva.nombre" placeholder="Nombre de la veterinaria" required />
+      <input name="direccion" [(ngModel)]="nueva.direccion" placeholder="Dirección" />
+      <input name="telefono" [(ngModel)]="nueva.telefono" placeholder="Teléfono" />
+      <button type="submit">Crear veterinaria</button>
+    </form>
+  }
+
+  @if (veterinarias().length === 0) {
+    <p>No hay veterinarias registradas todavía.</p>
+  } @else {
+    <div class="lista">
+      @for (v of veterinarias(); track v.id_veterinaria) {
+        <article class="tarjeta">
+          <h3>{{ v.nombre }}</h3>
+          @if (v.direccion) { <p>{{ v.direccion }}</p> }
+          @if (v.telefono) { <p>Tel: {{ v.telefono }}</p> }
+          <p>Calificación: {{ v.calificacion_promedio ?? 0 }}</p>
+          <a class="boton" [routerLink]="['/veterinarias', v.id_veterinaria]">Ver detalle</a>
+        </article>
+      }
+    </div>
+  }
+</section>

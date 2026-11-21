@@ -1,0 +1,18 @@
+.topbar {
+  background: var(--azul-oscuro);
+  border-bottom: 4px solid var(--dorado);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+.brand {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: none;
+}
+nav { display: flex; gap: 20px; flex-wrap: wrap; }
+nav a { color: white; text-decoration: none; font-weight: 500; }
+nav a:hover { color: var(--dorado); }
+.container { padding: 0 8px; }

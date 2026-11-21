@@ -1,0 +1,100 @@
+<section class="contenedor">
+  <h2>Salud de mis mascotas</h2>
+
+  @if (error()) { <p class="error">{{ error() }}</p> }
+
+  @if (mascotas().length === 0) {
+    <p>Primero registra una mascota en <a routerLink="/mascotas">Mis mascotas</a>.</p>
+  } @else {
+    <select name="mascota" [ngModel]="idMascota" (ngModelChange)="cambiarMascota($event)">
+      <option [ngValue]="null">Elige una mascota</option>
+      @for (m of mascotas(); track m.id_mascota) {
+        <option [ngValue]="m.id_mascota">{{ m.nombre }}</option>
+      }
+    </select>
+  }
+
+  @if (idMascota) {
+
+    <!-- RECORDATORIOS -->
+    <h3>Recordatorios</h3>
+    <form class="formulario" (ngSubmit)="guardarRecordatorio()">
+      <select name="rtipo" [(ngModel)]="nuevoRec.tipo" required>
+        <option value="">Tipo</option>
+        <option value="medicamento">Medicamento</option>
+        <option value="vacuna">Vacuna</option>
+        <option value="cita">Cita</option>
+        <option value="otro">Otro</option>
+      </select>
+      <input name="rfecha" type="date" [(ngModel)]="nuevoRec.fecha_programada" required />
+      <input name="rdesc" [(ngModel)]="nuevoRec.descripcion" placeholder="Descripción" />
+      <select name="rfrec" [(ngModel)]="nuevoRec.frecuencia">
+        <option value="">Frecuencia</option>
+        <option value="unica">Única</option>
+        <option value="diaria">Diaria</option>
+        <option value="semanal">Semanal</option>
+        <option value="mensual">Mensual</option>
+        <option value="anual">Anual</option>
+      </select>
+      <button type="submit">Agregar recordatorio</button>
+    </form>
+
+    @for (r of recordatorios(); track r.id_recordatorio) {
+      <article class="tarjeta">
+        <p><strong>{{ r.tipo }}</strong> - {{ r.fecha_programada }}{{ r.frecuencia ? ' (' + r.frecuencia + ')' : '' }}</p>
+        @if (r.descripcion) { <p>{{ r.descripcion }}</p> }
+        <p>{{ r.notificado ? 'Hecho' : 'Pendiente' }}</p>
+        @if (!r.notificado) {
+          <button (click)="marcarHecho(r.id_recordatorio)">Marcar como hecho</button>
+        }
+        <button class="borrar" (click)="borrarRecordatorio(r.id_recordatorio)">Eliminar</button>
+      </article>
+    } @empty {
+      <p>Sin recordatorios.</p>
+    }
+
+    <!-- MEDICAMENTOS -->
+    <h3>Medicamentos</h3>
+    <form class="formulario" (ngSubmit)="guardarMedicamento()">
+      <input name="mnombre" [(ngModel)]="nuevoMed.nombre" placeholder="Nombre del medicamento" required />
+      <input name="mdosis" [(ngModel)]="nuevoMed.dosis" placeholder="Dosis" />
+      <input name="minicio" type="date" [(ngModel)]="nuevoMed.fecha_inicio" />
+      <input name="mfin" type="date" [(ngModel)]="nuevoMed.fecha_fin" />
+      <input name="mobs" [(ngModel)]="nuevoMed.observaciones" placeholder="Observaciones" />
+      <button type="submit">Agregar medicamento</button>
+    </form>
+
+    @for (m of medicamentos(); track m.id_medicamento) {
+      <article class="tarjeta">
+        <p><strong>{{ m.nombre }}</strong>{{ m.dosis ? ' - ' + m.dosis : '' }}</p>
+        @if (m.fecha_inicio) { <p>Desde: {{ m.fecha_inicio }}{{ m.fecha_fin ? ' hasta ' + m.fecha_fin : '' }}</p> }
+        @if (m.observaciones) { <p>{{ m.observaciones }}</p> }
+        <button class="borrar" (click)="borrarMedicamento(m.id_medicamento)">Eliminar</button>
+      </article>
+    } @empty {
+      <p>Sin medicamentos.</p>
+    }
+
+    <!-- VACUNAS -->
+    <h3>Vacunas</h3>
+    <form class="formulario" (ngSubmit)="guardarVacuna()">
+      <input name="vnombre" [(ngModel)]="nuevaVac.nombre" placeholder="Nombre de la vacuna" required />
+      <input name="vobs" [(ngModel)]="nuevaVac.observaciones" placeholder="Observaciones" />
+      <input name="vaplic" type="date" [(ngModel)]="nuevaVac.fecha_aplicacion" />
+      <input name="vprox" type="date" [(ngModel)]="nuevaVac.fecha_proxima_dosis" />
+      <button type="submit">Agregar vacuna</button>
+    </form>
+
+    @for (v of vacunas(); track v.id_vacuna) {
+      <article class="tarjeta">
+        <p><strong>{{ v.nombre }}</strong></p>
+        @if (v.fecha_aplicacion) { <p>Aplicada: {{ v.fecha_aplicacion }}</p> }
+        @if (v.fecha_proxima_dosis) { <p>Próxima dosis: {{ v.fecha_proxima_dosis }}</p> }
+        @if (v.observaciones) { <p>{{ v.observaciones }}</p> }
+        <button class="borrar" (click)="borrarVacuna(v.id_vacuna)">Eliminar</button>
+      </article>
+    } @empty {
+      <p>Sin vacunas.</p>
+    }
+  }
+</section>

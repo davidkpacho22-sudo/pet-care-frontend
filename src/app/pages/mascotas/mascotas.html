@@ -1,0 +1,36 @@
+<section class="contenedor">
+  <h2>Mis mascotas</h2>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <form class="formulario" (ngSubmit)="guardar()">
+    <input name="nombre" [(ngModel)]="nueva.nombre" placeholder="Nombre" required />
+    <input name="especie" [(ngModel)]="nueva.especie" placeholder="Especie (Perro, Gato...)" required />
+    <input name="raza" [(ngModel)]="nueva.raza" placeholder="Raza" />
+    <input name="peso" type="number" step="0.1" [(ngModel)]="nueva.peso" placeholder="Peso (kg)" />
+    <input name="fecha" type="date" [(ngModel)]="nueva.fecha_nacimiento" />
+    <input name="chip" [(ngModel)]="nueva.chip" placeholder="Chip" />
+    <input name="alergias" [(ngModel)]="nueva.alergias" placeholder="Alergias" />
+    <input name="condiciones" [(ngModel)]="nueva.condiciones_medicas" placeholder="Condiciones médicas" />
+    <button type="submit">Agregar mascota</button>
+  </form>
+
+  @if (mascotas().length === 0) {
+    <p>Aún no tienes mascotas registradas.</p>
+  } @else {
+    <div class="lista">
+      @for (m of mascotas(); track m.id_mascota) {
+        <article class="tarjeta">
+          <h3>{{ m.nombre }}</h3>
+          <p>{{ m.especie }}{{ m.raza ? ' - ' + m.raza : '' }}</p>
+          @if (m.peso) { <p>Peso: {{ m.peso }} kg</p> }
+          @if (m.fecha_nacimiento) { <p>Nació: {{ m.fecha_nacimiento }}</p> }
+          @if (m.chip) { <p>Chip: {{ m.chip }}</p> }
+          <button class="borrar" (click)="eliminar(m.id_mascota)">Eliminar</button>
+        </article>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,46 @@
+<section class="contenedor">
+  <h2>Mi carrito</h2>
+
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (mensaje()) { <p class="ok">{{ mensaje() }}</p> }
+
+  @if (carrito(); as c) {
+    @if (c.detalles.length === 0) {
+      <p>Tu carrito está vacío. Mira los <a routerLink="/productos">productos</a>.</p>
+    } @else {
+      @for (d of c.detalles; track d.id_detalle) {
+        <article class="tarjeta">
+          <p><strong>{{ nombreProducto(d.id_producto) }}</strong></p>
+          <p>{{ d.cantidad }} x $ {{ d.precio_unitario | number:'1.0-0' }}
+             = $ {{ d.cantidad * +d.precio_unitario | number:'1.0-0' }}</p>
+          <button class="borrar" (click)="quitar(d.id_detalle)">Quitar</button>
+        </article>
+      }
+
+      <h3>Total: $ {{ total() | number:'1.0-0' }}</h3>
+
+      <form class="formulario" (ngSubmit)="hacerPedido()">
+        <input name="dir" [(ngModel)]="pedido.direccion_entrega" placeholder="Dirección de entrega" required />
+        <select name="pago" [(ngModel)]="pedido.metodo_pago">
+          <option value="">Método de pago</option>
+          <option value="Tarjeta">Tarjeta</option>
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia">Transferencia</option>
+        </select>
+        <button type="submit">Hacer pedido</button>
+      </form>
+    }
+  }
+
+  <h3>Mis pedidos</h3>
+  @for (p of pedidos(); track p.id_pedido) {
+    <article class="tarjeta">
+      <p><strong>Pedido #{{ p.id_pedido }}</strong> - {{ p.estado }}</p>
+      @if (p.fecha_creacion) { <p>{{ p.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</p> }
+      <p>Total: $ {{ p.total | number:'1.0-0' }}</p>
+      <p>Entrega: {{ p.direccion_entrega }}{{ p.metodo_pago ? ' - ' + p.metodo_pago : '' }}</p>
+    </article>
+  } @empty {
+    <p>Aún no has hecho pedidos.</p>
+  }
+</section>

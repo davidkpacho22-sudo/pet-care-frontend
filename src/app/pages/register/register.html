@@ -1,0 +1,44 @@
+<section class="auth-card">
+  <h2>Crear cuenta</h2>
+  <p class="subtitle">Regístrate para usar PeludOS.</p>
+
+  <form (ngSubmit)="onSubmit()" #regForm="ngForm" class="auth-form">
+    <label>
+      Nombre completo
+      <input type="text" name="nombre_completo" [(ngModel)]="form.nombre_completo" required />
+    </label>
+
+    <label>
+      Correo electrónico
+      <input type="email" name="correo_electronico" [(ngModel)]="form.correo_electronico" required email />
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" name="contrasena" [(ngModel)]="form.contrasena" required minlength="4" />
+    </label>
+
+    <label>
+      Teléfono (opcional)
+      <input type="text" name="telefono" [(ngModel)]="form.telefono" />
+    </label>
+
+    <label>
+      Dirección (opcional)
+      <input type="text" name="direccion" [(ngModel)]="form.direccion" />
+    </label>
+
+    @if (error) {
+      <p class="msg error">{{ error }}</p>
+    }
+    @if (exito) {
+      <p class="msg success">{{ exito }}</p>
+    }
+
+    <button type="submit" [disabled]="cargando || !regForm.form.valid">
+      {{ cargando ? 'Registrando…' : 'Registrarme' }}
+    </button>
+  </form>
+
+  <p class="alt">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+</section>

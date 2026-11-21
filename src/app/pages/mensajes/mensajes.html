@@ -1,0 +1,35 @@
+<section class="contenedor">
+  <h2>Mensajes</h2>
+
+  @if (miId()) {
+    <p>Tu ID de usuario es <strong>{{ miId() }}</strong>. Compártelo para que te escriban.</p>
+  }
+
+  @if (error()) { <p class="error">{{ error() }}</p> }
+
+  <form class="formulario" (ngSubmit)="abrir()">
+    <input name="otro" type="number" min="1" [(ngModel)]="idOtro" placeholder="ID del usuario con quien quieres hablar" />
+    <button type="submit">Abrir conversación</button>
+  </form>
+
+  @if (idActivo()) {
+    <h3>Conversación con el usuario #{{ idActivo() }}</h3>
+
+    @for (m of mensajes(); track m.id_mensaje) {
+      <article class="tarjeta">
+        <p><strong>{{ m.id_remitente === miId() ? 'Yo' : 'Usuario #' + m.id_remitente }}</strong></p>
+        <p>{{ m.contenido }}</p>
+        @if (m.fecha_envio) { <p>{{ m.fecha_envio | date:'dd/MM/yyyy HH:mm' }}</p> }
+      </article>
+    } @empty {
+      <p>Aún no hay mensajes. Escribe el primero.</p>
+    }
+
+    <form class="formulario" (ngSubmit)="enviar()">
+      <input name="texto" [(ngModel)]="texto" placeholder="Escribe tu mensaje" />
+      <button type="submit">Enviar</button>
+    </form>
+
+    <button (click)="cargar()">Actualizar conversación</button>
+  }
+</section>

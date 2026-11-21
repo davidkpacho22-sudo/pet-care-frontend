@@ -1,0 +1,80 @@
+<section class="contenedor">
+  <a routerLink="/veterinarias">← Volver a veterinarias</a>
+
+  @if (veterinaria(); as v) {
+    <h2>{{ v.nombre }}</h2>
+    @if (v.direccion) { <p>{{ v.direccion }}</p> }
+    @if (v.telefono) { <p>Tel: {{ v.telefono }}</p> }
+    <p>Calificación: {{ v.calificacion_promedio ?? 0 }}</p>
+  }
+
+  <!-- Componente de reseñas añadido, conectado al ID y al evento de recarga -->
+  <app-resenas [idVeterinaria]="idVet" (cambio)="recargarVeterinaria()" />
+
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (mensaje()) { <p class="ok">{{ mensaje() }}</p> }
+
+  <h3>Profesionales</h3>
+  @if (profesionales().length === 0) {
+    <p>Esta veterinaria aún no tiene profesionales.</p>
+  } @else {
+    <ul>
+      @for (p of profesionales(); track p.id_profesional) {
+        <li>{{ p.nombre_completo }}{{ p.especialidad ? ' - ' + p.especialidad : '' }}</li>
+      }
+    </ul>
+  }
+
+  @if (auth.isLoggedIn()) {
+    <form class="formulario" (ngSubmit)="guardarProfesional()">
+      <input name="pnombre" [(ngModel)]="nuevoProf.nombre_completo" placeholder="Nombre del profesional" required />
+      <input name="pesp" [(ngModel)]="nuevoProf.especialidad" placeholder="Especialidad" />
+      <input name="preg" [(ngModel)]="nuevoProf.numero_registro" placeholder="Número de registro" />
+      <button type="submit">Agregar profesional</button>
+    </form>
+
+    <h3>Agendar cita</h3>
+    @if (mascotas().length === 0) {
+      <p>Primero registra una mascota en <a routerLink="/mascotas">Mis mascotas</a>.</p>
+    } @else if (profesionales().length === 0) {
+      <p>Agrega un profesional para poder agendar.</p>
+    } @else {
+      <form class="formulario" (ngSubmit)="agendar()">
+        <select name="mascota" [(ngModel)]="cita.id_mascota">
+          <option [ngValue]="null">Elige tu mascota</option>
+          @for (m of mascotas(); track m.id_mascota) {
+            <option [ngValue]="m.id_mascota">{{ m.nombre }}</option>
+          }
+        </select>
+        <select name="prof" [(ngModel)]="cita.id_profesional">
+          <option [ngValue]="null">Elige el profesional</option>
+          @for (p of profesionales(); track p.id_profesional) {
+            <option [ngValue]="p.id_profesional">{{ p.nombre_completo }}</option>
+          }
+        </select>
+        <input name="fecha" type="datetime-local" [(ngModel)]="cita.fecha" />
+        <input name="motivo" [(ngModel)]="cita.motivo" placeholder="Motivo de la cita" />
+        <button type="submit">Agendar cita</button>
+      </form>
+
+      <h3>Mis citas en esta veterinaria</h3>
+      <select name="vista" [(ngModel)]="mascotaVista" (ngModelChange)="verCitas($event)">
+        <option [ngValue]="null">Elige una mascota para ver sus citas</option>
+        @for (m of mascotas(); track m.id_mascota) {
+          <option [ngValue]="m.id_mascota">{{ m.nombre }}</option>
+        }
+      </select>
+
+      @for (c of citas(); track c.id_cita) {
+        <article class="tarjeta">
+          <p><strong>{{ c.fecha | date:'dd/MM/yyyy HH:mm' }}</strong> {{ c.estado }}</p>
+          <p>{{ nombreProfesional(c.id_profesional) }}</p>
+          @if (c.motivo) { <p>{{ c.motivo }}</p> }
+          <button class="borrar" (click)="cancelar(c.id_cita)">Cancelar cita</button>
+        </article>
+      }
+    }
+  } @else {
+    <p>Inicia sesión para agendar citas.</p>
+  }
+</section>
